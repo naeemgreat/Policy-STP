@@ -1,0 +1,97 @@
+Policy 1 VLAN 100 never treverse SW-4
+SW-2
+int range eth 0/2-3
+sw tr allowed  vlan except 100
+exit
+
+SW-3
+int range eth 0/0-1
+sw tr allowed vlan except 100
+exit
+
+SW-4
+int range eth 0/0-3
+sw tr allowed vlan except 100
+exit
+
+SW2# show interface trunk | exclude trunking|200|300|domain|pruned|Enc
+SW3# show interface trunk | exclude trunking|200|300|domain|pruned|Enc
+SW4# show interface trunk | exclude trunking|200|300|pruned|domain|Enc
+---------------------------------------------------------------------------------
+
+Policy 2 VLAN 200 never treverse SW-3
+SW-1
+int range eth 0/2-3
+sw tr allowed vlan except 200
+exit
+
+SW-4
+int range eth 0/0-1
+sw tr allowed vlan except 100,200
+exit
+
+SW-3
+int range eth 0/0-1
+sw tr allowed vlan except 100,200
+exit
+
+int range eth 0/2-3
+sw tr allowed vlan except 200
+exit
+
+SW1# show interface trunk | exclude trunking|200|300|100|pruned|domain|Enc
+SW3# show interface trunk | exclude trunking|200|300|pruned|domain|Enc
+SW4# show interface trunk | exclude trunking|200|300|400|pruned|domain|Enc
+
+---------------------------------------------------------------------------------------
+policy 3 VLAN 300 never treverse SW-2
+
+SW-2
+int range eth 0/2-3
+sw tr allowed vlan except 100,300
+exit
+
+int range eth 0/0-1
+sw tr allowed vlan except 300
+exit
+
+SW-4
+int range eth 0/2-3
+sw tr allowed vlan except 100,300
+exit
+
+SW-1
+int range eth 0/0-1
+sw tr allowed vlan except 300
+exit
+
+SW2# show interface trunk | exclude trunking|200|400|pruned|domain|Enc
+SW4# show interface trunk | exclude trunking|200|300|400|pruned|domain|Enc
+SW1# show interface trunk | exclude trunking|200|300|100|pruned|domain|Enc
+
+----------------------------------------------------------------------------------
+policy 4 VLAN 400 never treverse SW-1
+
+SW-1
+int range eth 0/0-1
+sw trunk allowed vlan 300,400
+exit
+
+int range eth 0/2-3
+sw trunk allowed vlan 200,400
+exit
+
+SW-2
+int range eth 0/0-1
+sw tr allowed vlan except 300,400
+exit
+
+SW-3
+int range eth 0/2-3
+sw tr allowed vlan except 200,400
+exit
+
+SW1# show interface trunk | exclude trunking|200|300|100|pruned|domain|Enc
+SW2# show interface trunk | exclude trunking|100|200|300|pruned|domain|Enc
+SW3# show interface trunk | exclude trunking|200|300|pruned|domain|Enc
+
